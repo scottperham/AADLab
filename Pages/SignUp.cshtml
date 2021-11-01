@@ -1,0 +1,78 @@
+﻿@page
+@model AADLab.Pages.SignUpModel
+@section Scripts {
+
+    <script type="text/javascript">
+
+        // When the DOM is ready...
+        $(() => {
+            // Hook the submit event of the sign up form
+            $("#signupForm").submit(async (e) => {
+                
+                // The default behaviour of an HTML form submit event is to POST to the current URL
+                // we want to prevent that because we are handling the submit from the client
+                e.preventDefault();
+
+                // Grab the contents of the input boxes
+                const email = $("#email").val();
+                const password = $("#password").val();
+                const confirmPassword = $("#confirmPassword").val();
+                const displayName = $("#displayName").val();
+
+                const {success, error} = await callAPI("/api/signUp", {
+                    email: email,
+                    password: password,
+                    displayName: displayName
+                }, null, "text");
+
+                if (success) {
+                    window.location.href = "/login";
+                    return;
+                }
+                else {
+                    alert("Error");
+                }
+            });
+        });
+
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Sign up</h1>
+    <div class="container-md text-left">
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="displayName">Display Name</label>
+                <input type="text" class="form-control" id="displayName" placeholder="Enter display name">
+                <div id="invalidDisplayName" class="invalid-feedback">
+                    Please enter your display name.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email">
+                <div id="invalidEmail" class="invalid-feedback">
+                    Please enter your email address.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Password">
+                <div id="invalidPassword" class="invalid-feedback">
+                    Please enter your password.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password">
+                <div id="invalidConfirmPassword" class="invalid-feedback">
+                    Please enter your password.
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+    </div>
+
+</div>
+

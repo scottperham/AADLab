@@ -1,0 +1,68 @@
+﻿@page
+@model AADLab.Pages.LoginModel
+@section Scripts {
+
+    <script type="text/javascript">
+
+        // When the DOM is ready...
+        $(() => {
+            // Hook the submit event of the login form
+            $("#loginForm").submit(async (e) => {
+                
+                // The default behaviour of an HTML form submit event is to POST to the current URL
+                // we want to prevent that because we are handling the submit from the client
+                e.preventDefault();
+
+                // Grab the contents of the email and password input boxes
+                const email = $("#email").val();
+                const password = $("#password").val();
+
+                // Attempt to log in using the entered crendentials
+                const [success, error] = await signInLocal(email, password);
+
+                if (!success) {
+                    // There was a problem, show the error
+                    $("#invalidEmail,#invalidPassword").html(error).show();
+                }
+                else {
+                    // Success! Redirect to the profile page
+                    window.location.href = "/Profile";
+                }
+            });
+        });
+
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Login</h1>
+    <div class="container-md text-left">
+        <form id="loginForm">
+            <div><a href="/signup">Sign Up</a></div>
+            <div class="font-weight-bold">Local Login</div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email">
+                <div id="invalidEmail" class="invalid-feedback">
+                    Please enter your email address.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Password">
+                <div id="invalidPassword" class="invalid-feedback">
+                    Please enter your password.
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <div>
+            <div class="font-weight-bold">MSA Login</div>
+            <div>
+                <button onclick="signInAADPopup()" class="btn btn-primary">Login with Popup</button>
+                <button onclick="signInAADRedirect()" class="btn btn-primary">Login with Redirect</button>
+            </div>
+        </div>
+    </div>
+
+</div>

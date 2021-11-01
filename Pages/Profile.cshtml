@@ -1,0 +1,236 @@
+﻿@page
+@model AADLab.Pages.ProfileModel
+@section Scripts {
+
+    <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.18.0/js/msal-browser.min.js"></script>
+
+    <script type="text/javascript">
+
+        // When the SSO process has completed...
+        $(document).on("ssoComplete", async () => {
+            // Get the cached user
+            const user = getUser();
+
+            // If there is no cached user then no one is logged in...
+            if (!user) {
+                // ...so redirect to the home page
+                window.location.href = "/";
+                return;
+            }
+
+            const { success, error, result } = await callAPI("/api/profile", {
+                accessToken: user.aadToken
+            }, user.apiToken);
+
+            const profile = result;
+
+            populateLocalIdentity(result.localIdentity, user.apiToken);
+            populateMicrosoftIdentity(result.microsoftIdentity, user.aadToken);
+            await populateLocalMicrosoftIdentity(user.graphToken);
+
+        });
+
+        function populateLocalIdentity(identity, accessToken) {
+            
+            $("#localId_Id").html(identity.id);
+            $("#localId_displayName").html(identity.displayName);
+            $("#localId_mail").html(identity.email);
+            $("#localId_accessToken").html(accessToken);
+
+            $("#localId").show();
+            $("#localIdLoading").hide();
+        }
+
+        function populateMicrosoftIdentity(identity, accessToken) {
+
+            if (!identity) {
+                $("#msIdLoading").html("You haven't signed in using Azure Active Directory so we are unable to obtain a Graph token for you");
+                return;
+            }
+
+            $("#msId_Id").html(identity.id);
+            $("#msId_givenName").html(identity.givenName);
+            $("#msId_surname").html(identity.surname);
+            $("#msId_displayName").html(identity.displayName);
+            $("#msId_mail").html(identity.mail);
+            $("#msId_accessToken").html(accessToken);
+
+            $("#msId").show();
+            $("#msIdLoading").hide();
+        }
+
+        async function populateLocalMicrosoftIdentity(graphToken) {
+            if (!graphToken) {
+                $("#localMsIdLoading").html("You haven't signed in using Azure Active Directory so we are unable to obtain a Graph token for you");
+                return;
+            }
+
+            const { success, err, result } = await callAPI("https://graph.microsoft.com/v1.0/me", null, graphToken);
+                
+            if (success) {
+                
+                $("#localMsId_Id").html(result.id);
+                $("#localMsId_givenName").html(result.givenName);
+                $("#localMsId_surname").html(result.surname);
+                $("#localMsId_displayName").html(result.displayName);
+                $("#localMsId_mail").html(result.mail);
+                $("#localMsId_accessToken").html(graphToken);
+                                
+                $("#localMsId").show();
+                $("#localMsIdLoading").hide();
+
+                await downloadProfilePicture(graphToken);
+            }
+        }
+
+        async function downloadProfilePicture(graphToken) {
+            const { success, err, result } = await callAPI("https://graph.microsoft.com/v1.0/me/photo/$value", null, graphToken, "blob");
+
+            if (success) {
+                const src = URL.createObjectURL(result);
+                $("#localMsId_Image").attr("src", src);
+            }
+        }
+
+        function showHideAccessToken(accessTokenElementId, showHideLink) {
+            $("#" + accessTokenElementId).toggle();
+            $(showHideLink).html($("#" + accessTokenElementId).is(":visible") ? "Hide" : "Show");
+            return false;
+        }
+
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Profile</h1>
+    <div class="container-md text-left">
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <div>
+                    <div class="h5">Local Identity</div>
+                    <div>This is the identity stored in the JSON file of this sample</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container" id="localIdLoading">
+                    Loading...
+                </div>
+                <div class="container" id="localId" style="display: none;">
+                    <div class="row">
+                        <div class="col-2">ID: </div>
+                        <div class="col" id="localId_Id"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Display Name: </div>
+                        <div class="col" id="localId_displayName"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Mail: </div>
+                        <div class="col" id="localId_mail"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Access Token: </div>
+                        <div class="col-2">
+                            <a href="#" onclick="showHideAccessToken('localId_accessToken', this); event.preventDefault();">Show</a>
+                        </div>
+                        <div class="col text-wrap" style="display: none;" id="localId_accessToken"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <div>
+                    <div class="h5">Microsoft Identity (Server)</div>
+                    <div>This is the Microsoft identity retrieved from the server using the token obtained when you signed in using Azure Active Directory and then swapped for a Graph token</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container" id="msIdLoading">
+                    Loading...
+                </div>
+                <div class="container" id="msId" style="display: none;">
+                    <div class="row">
+                        <div class="col-2">ID: </div>
+                        <div class="col" id="msId_Id"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Given Name: </div>
+                        <div class="col" id="msId_givenName"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Surname: </div>
+                        <div class="col" id="msId_surname"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Display Name: </div>
+                        <div class="col" id="msId_displayName"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Mail: </div>
+                        <div class="col" id="msId_mail"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Access Token: </div>
+                        <div class="col-2">
+                            <a href="#" onclick="showHideAccessToken('msId_accessToken', this); event.preventDefault();">Show</a>
+                        </div>
+                        <div class="col text-wrap" style="display: none;" id="msId_accessToken"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-header">
+                <div>
+                    <div class="h5">Microsoft Identity (Client)</div>
+                    <div>This is the Microsoft identity retrieved by the client (Javascript) using the token obtained when you signed in using Azure Active Directory and then swapped for a Graph token</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container" id="localMsIdLoading">
+                    Loading...
+                </div>
+                <div class="container" id="localMsId" style="display: none;">
+                    <div class="row">
+                        <div class="col-2">Image: </div>
+                        <div class="col">
+                            <img class="rounded-circle" style="width: 100px; height: 100px;" id="localMsId_Image" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">ID: </div>
+                        <div class="col" id="localMsId_Id"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Given Name: </div>
+                        <div class="col" id="localMsId_givenName"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Surname: </div>
+                        <div class="col" id="localMsId_surname"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Display Name: </div>
+                        <div class="col" id="localMsId_displayName"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Mail: </div>
+                        <div class="col" id="localMsId_mail"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">Access Token: </div>
+                        <div class="col-2">
+                            <a href="#" onclick="showHideAccessToken('localMsId_accessToken', this); event.preventDefault();">Show</a>
+                        </div>
+                        <div class="col text-wrap" style="display: none;" id="localMsId_accessToken"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

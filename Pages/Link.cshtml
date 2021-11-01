@@ -1,0 +1,44 @@
+﻿@page
+@model AADLab.Pages.LinkModel
+@section Scripts {
+
+    <script type="text/javascript">
+
+        // When the DOM is ready...
+        $(() => {
+            
+        });
+
+        async function handleLink(link) {
+
+            const user = getUser();
+            
+            if (!user || !user.link) {
+                location.href = "/";
+            }
+
+            if (linkIdentity(user.aadToken, link)) {
+                location.href = "/profile";
+            }
+        }
+
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Login</h1>
+    <div class="container-md text-left">
+
+        <div>
+            <div>
+                We found an account! Would you like to link it to this org?
+            </div>
+            <div>
+                <button class="btn-primary mr-3" onclick="handleLink(true)">Yes! Link my account</button>
+                <button class="btn-primary" onclick="handleLink(false)">No thanks</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
