@@ -52,7 +52,7 @@ async function callAPI(uri, body, bearerToken, returnType) {
 
 let msalInstance = null;
 const storage = window.localStorage;
-const scopes = ["api://ec9418a2-c3a2-477e-ab46-2796cfc9208d/access_as_user", "User.Read", "profile"];
+const scopes = ["api://" + window.global.clientId + "/access_as_user", "User.Read", "profile"];
 
 function setUserChanged(user, aadToken, apiToken, graphToken, link) {
 	window.loggedInUser = { user, aadToken, apiToken, graphToken, link };
@@ -79,8 +79,8 @@ function msalInit() {
 	if (!msalInstance) {
 		msalInstance = new msal.PublicClientApplication({
 			auth: {
-				clientId: "ec9418a2-c3a2-477e-ab46-2796cfc9208d",
-				redirectUri: "https://localhost:44371/"
+				clientId: window.global.clientId,
+				redirectUri: location.protocol + '//' + location.host
 			},
 			cache: {
 				cacheLocation: "localStorage"

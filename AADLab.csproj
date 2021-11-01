@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClientSideConfig" Version="1.0.0-pre" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.37.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.14.0" />

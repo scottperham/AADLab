@@ -1,4 +1,5 @@
 using AADLab.Services;
+using ClientSideConfig;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -70,6 +71,14 @@ namespace AADLab
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseClientSideConfig(new
+            {
+                clientId = Configuration["Msal:ClientId"]
+            }, new ClientSideConfigJsOptions
+            {
+                PathEnd = "/config.js"
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -38,40 +38,48 @@
     </script>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Sign up</h1>
-    <div class="container-md text-left">
-        <form id="signupForm">
-            <div class="form-group">
-                <label for="displayName">Display Name</label>
-                <input type="text" class="form-control" id="displayName" placeholder="Enter display name">
-                <div id="invalidDisplayName" class="invalid-feedback">
-                    Please enter your display name.
-                </div>
+<div class="container">
+    <div class="card mb-3">
+        <div class="card-header font-weight-bold">
+            Sign up
+        </div>
+        <div class="card-body px-5">
+            <div class="w-50 mx-auto">
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="displayName">Display Name</label>
+                        <input type="text" class="form-control" id="displayName" placeholder="Enter display name">
+                        <div id="invalidDisplayName" class="invalid-feedback">
+                            Please enter your display name.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email">
+                        <div id="invalidEmail" class="invalid-feedback">
+                            Please enter your email address.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password">
+                        <div id="invalidPassword" class="invalid-feedback">
+                            Please enter your password.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password">
+                        <div id="invalidConfirmPassword" class="invalid-feedback">
+                            Please enter your password.
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" placeholder="Enter email">
-                <div id="invalidEmail" class="invalid-feedback">
-                    Please enter your email address.
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password">
-                <div id="invalidPassword" class="invalid-feedback">
-                    Please enter your password.
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password">
-                <div id="invalidConfirmPassword" class="invalid-feedback">
-                    Please enter your password.
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-        </form>
+        </div>
     </div>
 
 </div>

@@ -28,6 +28,9 @@
                         <li class="nav-item require-nouser" style="display: none;">
                             <a class="nav-link text-dark" asp-page="/Login">Login</a>
                         </li>
+                        <li class="nav-item require-nouser" style="display: none;">
+                            <a class="nav-link text-dark" asp-page="/SignUp">Sign up</a>
+                        </li>
                         <li class="nav-item require-user" style="display: none;">
                             <a class="nav-link text-dark" style="cursor: pointer" onclick="signOutCurrentUser()">Logout</a>
                         </li>
@@ -44,10 +47,11 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - AADLab - <a asp-page="/Privacy">Privacy</a>
+            &copy; 2021 - AADLab
         </div>
     </footer>
-
+    
+    <script src="/config.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.18.0/js/msal-browser.min.js"></script>
