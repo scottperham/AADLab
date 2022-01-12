@@ -26,32 +26,33 @@ namespace AADLab.Services
 
         async Task PopulateCache()
         {
-            if (_cached == null || System.IO.File.GetLastWriteTimeUtc(_filePath) > _cacheUpdated)
+            if (_cached == null || File.GetLastWriteTimeUtc(_filePath) > _cacheUpdated)
             {
-                if (!System.IO.File.Exists(_filePath))
+                if (!File.Exists(_filePath))
                 {
-                    await System.IO.File.WriteAllTextAsync(_filePath, "[]");
+                    Directory.CreateDirectory(Path.GetDirectoryName(_filePath));
+                    await File.WriteAllTextAsync(_filePath, "[]");
                 }
 
-                using var fileStream = System.IO.File.OpenRead(_filePath);
+                using var fileStream = File.Open(_filePath, FileMode.OpenOrCreate);
 
                 _cached = await JsonSerializer.DeserializeAsync<List<UserIdentity>>(fileStream, _serializerOptions);
-                _cacheUpdated = System.IO.File.GetLastWriteTimeUtc(_filePath);
+                _cacheUpdated = File.GetLastWriteTimeUtc(_filePath);
             }
         }
 
         async Task<bool> CommitCache()
         {
-            if (System.IO.File.GetLastWriteTimeUtc(_filePath) > _cacheUpdated)
+            if (File.GetLastWriteTimeUtc(_filePath) > _cacheUpdated)
             {
                 return false;
             }
 
-            using var fileStream = System.IO.File.Open(_filePath, System.IO.FileMode.Truncate);
+            using var fileStream = File.Open(_filePath, FileMode.Truncate);
 
             await JsonSerializer.SerializeAsync(fileStream, _cached, _serializerOptions);
 
-            _cacheUpdated = System.IO.File.GetLastWriteTimeUtc(_filePath);
+            _cacheUpdated = File.GetLastWriteTimeUtc(_filePath);
             return true;
         }
 
