@@ -9,11 +9,11 @@ namespace AADLab.Services
 {
     public class JsonFileIdentityProvider : IIdentityProvider
     {
-        string _filePath;
+        readonly string _filePath;
         List<UserIdentity> _cached = null;
         DateTime _cacheUpdated = DateTime.UtcNow;
 
-        readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
+        readonly JsonSerializerOptions _serializerOptions = new()
         {
             WriteIndented = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase

@@ -20,11 +20,11 @@ namespace AADLab.Services
             public bool IsExpired() => Expires <= DateTime.UtcNow.AddSeconds(-30);
         }
 
-        static Dictionary<string, GraphToken> _fakeCache = new Dictionary<string, GraphToken>(StringComparer.OrdinalIgnoreCase);
+        static Dictionary<string, GraphToken> _fakeCache = new(StringComparer.OrdinalIgnoreCase);
 
         private readonly IConfiguration _configuration;
 
-        private HttpClient _httpClient = new HttpClient();
+        private HttpClient _httpClient = new();
 
         public Graph(IConfiguration configuration)
         {
@@ -43,6 +43,7 @@ namespace AADLab.Services
 
             var client = builder.Build();
 
+            //Calls the /oauth2/v2.0/token endpoint to swap the given AAD token for another with different scopes
             var tokenBuilder = client.AcquireTokenOnBehalfOf(new[] { "User.Read" }, new UserAssertion(token));
 
             var result = await tokenBuilder.ExecuteAsync();

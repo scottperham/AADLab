@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AADLab.Controllers
+﻿namespace AADLab.Controllers
 {
     public class DeleteUserRequest
     {
