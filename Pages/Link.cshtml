@@ -25,20 +25,15 @@
     </script>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Login</h1>
-    <div class="container-md text-left">
 
-        <div>
-            <div>
-                We found an account! Would you like to link it to this org?
-            </div>
-            <div>
-                <button class="btn-primary mr-3" onclick="handleLink(true)">Yes! Link my account</button>
-                <button class="btn-primary" onclick="handleLink(false)">No thanks</button>
-            </div>
+<div class="container">
+    <div class="card mb-3">
+        <div class="card-header font-weight-bold">
+            We found a local account with the same email address! Would you like to link it to this Microsoft account?
         </div>
-
+        <div class="card-body px-5 text-center">
+            <button class="btn btn-primary mr-5" onclick="handleLink(true)">Yes! Link my account</button>
+            <button class="btn btn-primary" onclick="handleLink(false)">No thanks</button>
+        </div>
     </div>
-
 </div>

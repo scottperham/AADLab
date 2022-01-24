@@ -294,6 +294,7 @@ $(async () => {
 	//redirect...
 	if (isLoggedIn && getUser().link && !location.href.endsWith("/link")) {
 		location.href = "/link";
+		return;
 	}
 
 	//Tell everyone that sso is complete! (At least, it was attempted)
