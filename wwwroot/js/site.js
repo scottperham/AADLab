@@ -272,7 +272,8 @@ async function signInAADPopup() {
 	}
 }
 
-//Try to silently sign in the user from either and AuthCode in the url, cached AAD tokens (via the msal library) or cached refresh token
+//Try to silently sign in the user from either and AuthCode in the url, 
+//cached AAD tokens(via the msal library) or cached refresh token
 async function tryLoginUserSilent() {
 
 	if (await signInFromAuthCodeRedirect()) {
