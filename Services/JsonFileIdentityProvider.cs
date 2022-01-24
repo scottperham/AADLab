@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace AADLab.Services
 {
+    // A fake identity provider that uses a JSON file as it's backing store
+    // this could be replaced with an implementation that uses a _real_
+    // identity provider
     public class JsonFileIdentityProvider : IIdentityProvider
     {
         readonly string _filePath;
@@ -24,6 +27,8 @@ namespace AADLab.Services
             _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data\\identities.json");
         }
 
+        // Populates the local cache from the JSON file if it's either empty
+        // or the file has been updated since the last cache
         async Task PopulateCache()
         {
             if (_cached == null || File.GetLastWriteTimeUtc(_filePath) > _cacheUpdated)
@@ -41,6 +46,7 @@ namespace AADLab.Services
             }
         }
 
+        // Writes the cache back to the JSON file
         async Task<bool> CommitCache()
         {
             if (File.GetLastWriteTimeUtc(_filePath) > _cacheUpdated)
@@ -56,6 +62,7 @@ namespace AADLab.Services
             return true;
         }
 
+        // Returns a user identity by id
         public async Task<UserIdentity> GetUserById(string id)
         {
             await PopulateCache();
@@ -63,6 +70,7 @@ namespace AADLab.Services
             return _cached.FirstOrDefault(x => x.Id.Equals(id));
         }
 
+        // Returns a user identity by AAD object id and tenant id
         public async Task<UserIdentity> GetUserByOidAndTid(string oid, string tid)
         {
             await PopulateCache();
@@ -70,6 +78,7 @@ namespace AADLab.Services
             return _cached.FirstOrDefault(x => x.AADOID?.Equals(oid) == true && x.AADTID?.Equals(tid) == true);
         }
 
+        // Returns a user by email address
         public async Task<UserIdentity> GetLocalUserByEmail(string email)
         {
             await PopulateCache();
@@ -77,6 +86,7 @@ namespace AADLab.Services
             return _cached.FirstOrDefault(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(x.Password));
         }
 
+        // Returns all users in the system
         public async Task<UserIdentity[]> GetAllUsers()
         {
             await PopulateCache();
@@ -84,6 +94,7 @@ namespace AADLab.Services
             return _cached.ToArray();
         }
 
+        // Returns a user by a given refresh token
         public async Task<UserIdentity> GetUserByRefreshToken(string refreshToken)
         {
             await PopulateCache();
@@ -91,6 +102,7 @@ namespace AADLab.Services
             return _cached.FirstOrDefault(x => x.RefreshTokens.FirstOrDefault(y => y.Token == refreshToken && y.AbsoluteExpiryUtc > DateTime.UtcNow) != null);
         }
 
+        // Adds or updates a user, updates the cache and commits to the JSON file
         public async Task CreateOrUpdateUser(UserIdentity user)
         {
             await PopulateCache();
@@ -111,6 +123,7 @@ namespace AADLab.Services
             await CommitCache();
         }
 
+        // Removes a user from the system
         public async Task DeleteUser(string id)
         {
             await PopulateCache();

@@ -18,12 +18,14 @@
                 return;
             }
 
+            // Call the API endpoint to retrieve profile information
             const { success, error, result } = await callAPI("/api/profile", {
                 accessToken: user.aadToken
             }, user.apiToken);
 
             const profile = result;
 
+            //Populate the UI
             populateLocalIdentity(result.localIdentity, user.apiToken);
             populateMicrosoftIdentity(result.microsoftIdentity, user.aadToken);
             await populateLocalMicrosoftIdentity(user.graphToken);

@@ -20,8 +20,6 @@ namespace AADLab.Services
             public bool IsExpired() => Expires <= DateTime.UtcNow.AddSeconds(-30);
         }
 
-        static Dictionary<string, GraphToken> _fakeCache = new(StringComparer.OrdinalIgnoreCase);
-
         private readonly IConfiguration _configuration;
 
         private HttpClient _httpClient = new();
@@ -31,11 +29,8 @@ namespace AADLab.Services
             _configuration = configuration;
         }
 
-        public void RemoveTokenForUser(string userId)
-        {
-            _fakeCache.Remove(userId);
-        }
-
+        // Swaps an AAD issues "access_as_user" token for another graph token
+        // with the specified scopes
         public async Task<string> GetOnBehalfOfToken(string token)
         {
             var builder = ConfidentialClientApplicationBuilder.Create(_configuration["Msal:ClientId"])
@@ -51,6 +46,7 @@ namespace AADLab.Services
             return result.AccessToken;
         }
 
+        // Calls the /1.0/me Graph endpoint with the specified token
         public async Task<GraphMeResult> GetMe(string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -60,6 +56,7 @@ namespace AADLab.Services
             return JsonSerializer.Deserialize<GraphMeResult>(await meResult.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
 
+        // Calls the /1.0/organization Graph endpoint with the specified token
         public async Task<GraphOrganizationResult> GetOrganisation(string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

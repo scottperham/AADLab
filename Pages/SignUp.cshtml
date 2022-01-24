@@ -19,17 +19,20 @@
                 const confirmPassword = $("#confirmPassword").val();
                 const displayName = $("#displayName").val();
 
+                // Post the form values to the API
                 const {success, error} = await callAPI("/api/signUp", {
                     email: email,
                     password: password,
                     displayName: displayName
                 }, null, "text");
 
+                // Handle the result
                 if (success) {
                     window.location.href = "/login";
                     return;
                 }
                 else {
+                    // Do something more than display and error alert here!
                     alert("Error");
                 }
             });

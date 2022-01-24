@@ -17,6 +17,7 @@ namespace AADLab.Services
             _configuration = configuration;
         }
 
+        // Builds and signs a JWT using the passed details
         public string GetToken(string id, string name, string email, IDictionary<string, string> additionalClaims = null)
         {
             var claims = new List<Claim>
