@@ -100,6 +100,13 @@
             return false;
         }
 
+        function copyToClipboard(textElementId, copyElement) {
+            navigator.clipboard.writeText($("#" + textElementId).html()).then(() => {
+                $(copyElement).html("Copied!");
+                window.setTimeout(() => $(copyElement).html("Copy"), 5000);
+            });
+        }
+
     </script>
 }
 
@@ -133,8 +140,10 @@
                     </div>
                     <div class="row">
                         <div class="col-2">Access Token: </div>
-                        <div class="col-2">
-                            <a href="#" onclick="showHideAccessToken('localId_accessToken', this); event.preventDefault();">Show</a>
+                        <div class="col">
+                            <a href="javascript: void(0);" onclick="showHideAccessToken('localId_accessToken', this); event.preventDefault();">Show</a>
+                            |
+                            <a href="javascript: void(0);" onclick="copyToClipboard('localId_accessToken', this)">Copy</a>
                         </div>
                         <div class="col text-wrap" style="display: none;" id="localId_accessToken"></div>
                     </div>
@@ -176,8 +185,10 @@
                     </div>
                     <div class="row">
                         <div class="col-2">Access Token: </div>
-                        <div class="col-2">
-                            <a href="#" onclick="showHideAccessToken('msId_accessToken', this); event.preventDefault();">Show</a>
+                        <div class="col">
+                            <a href="javascript: void(0);" onclick="showHideAccessToken('msId_accessToken', this); event.preventDefault();">Show</a>
+                            |
+                            <a href="javascript: void(0);" onclick="copyToClipboard('msId_accessToken', this)">Copy</a>
                         </div>
                         <div class="col text-wrap" style="display: none;" id="msId_accessToken"></div>
                     </div>
@@ -225,8 +236,10 @@
                     </div>
                     <div class="row">
                         <div class="col-2">Access Token: </div>
-                        <div class="col-2">
-                            <a href="#" onclick="showHideAccessToken('localMsId_accessToken', this); event.preventDefault();">Show</a>
+                        <div class="col">
+                            <a href="javascript: void(0);" onclick="showHideAccessToken('localMsId_accessToken', this); event.preventDefault();">Show</a>
+                            |
+                            <a href="javascript: void(0);" onclick="copyToClipboard('localMsId_accessToken', this)">Copy</a>
                         </div>
                         <div class="col text-wrap" style="display: none;" id="localMsId_accessToken"></div>
                     </div>
